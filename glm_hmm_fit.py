@@ -68,9 +68,10 @@ trial_indices = np.nonzero(data["currMaze"] > 0)[0]
 # print(f"number of trials: {trial_indices.size}")
 filt_len = 30
 bin_size = 0.35
-n_neurons = total_neurons
-# neuron_idx = np.random.randint(0, total_neurons, size=n_neurons)
-neuron_idx = np.arange(n_neurons)
+n_neurons = 50
+np.random.seed(10)
+neuron_idx = np.random.randint(0, total_neurons, size=n_neurons)
+# neuron_idx = np.arange(n_neurons)
 # neuron_idx = np.array([11, 12])
 trial_id = (
     []
@@ -112,7 +113,7 @@ for i, neuron in enumerate(neuron_idx):
         )
         X_sp = hankel(padded_spikes[: -filt_len + 1], padded_spikes[-filt_len:])
 
-        X.append(np.hstack((X_sr, X_sl, X_sp, np.ones((X_sp.shape[0], 1)))))
+        X.append(np.hstack((X_sr, X_sl, np.ones((X_sp.shape[0], 1)))))
         y.append(binned_spikes[:, np.newaxis])
         if i == 0:
             trial_id.append(trial_idx * np.ones(X_sr.shape[0]))
@@ -138,19 +139,18 @@ for run in range(5):
             family=sm.families.Poisson(),
         )
         # glms[neuron] = glm
-        a = 1 * np.ones(X_all.shape[2])
+        a = 0.5 * np.ones(X_all.shape[2])
         a[-1] = 0
         res = glm.fit_regularized(alpha=a, L1_wt=0.0, maxiter=1000, cnvrg_tol=1e-6)
         # res = glm.fit(max_iter=1000, tol=1e-6, tol_criterion="params")
         w = res.params
         theta_init[:, neuron] = w
 
-    # with functions
     n_states = 3
     n_trials = trial_indices.size
     theta_hmm = np.ones((n_states, X_all.shape[2], n_neurons)) * theta_init
     # adding noise to all the weights
-    theta_hmm += np.random.normal(0, 0.01, size=theta_hmm.shape)
+    theta_hmm += np.random.normal(0, 0.1, size=theta_hmm.shape)
     t_init = np.array([5, 1, 1])
     # placing higher bias on self-transition
     T = np.array([dirichlet(np.roll(t_init, n)).rvs()[0] for n in range(n_states)])
@@ -161,7 +161,7 @@ for run in range(5):
     total_ll = []
 
 
-    for _ in range(20):
+    for _ in range(35):
         alpha, loglikeli, scale, predict = forward(
             X_all, y_all, theta_hmm, T, pi, trial_id
         )
@@ -209,7 +209,7 @@ for run in range(5):
                 )
                 # can greatly effect outcome. too high on simulated data made it fail, basically comes down to noise level of data
                 # higher noise ---> set alpha to be higher
-                a = 0.5 * np.ones(X_all.shape[2])
+                a = 0.2 * np.ones(X_all.shape[2])
                 a[-1] = 0
                 res = glm.fit_regularized(
                     alpha=a, L1_wt=0.0, maxiter=1000, cnvrg_tol=1e-6

@@ -8,9 +8,11 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=20G
-#SBATCH --time=24:00:00
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=15:00:00
 #SBATCH --job-name=hmm_test_fit
+#SBATCH --mail-user=yousuf@princeton.edu
+
 
 echo "In the directory: `pwd` "
 echo "As the user: `whoami` "
