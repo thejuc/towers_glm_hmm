@@ -69,7 +69,7 @@ trial_indices = np.nonzero(data["currMaze"] > 0)[0]
 filt_len = 30
 bin_size = 0.35
 n_neurons = 50
-np.random.seed(10)
+np.random.seed(0)
 neuron_idx = np.random.randint(0, total_neurons, size=n_neurons)
 # neuron_idx = np.arange(n_neurons)
 # neuron_idx = np.array([11, 12])

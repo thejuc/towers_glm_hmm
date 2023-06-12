@@ -45,6 +45,7 @@ out['cueOnset_L'] = data['cueOnset_L'][idx[0]]
 out['cueOnset_R'] = data['cueOnset_R'][idx[0]]
 out['choice'] = data['choice'][idx[0]]
 out['trialType'] = data['trialType'][idx[0]]
+out['pos'] = data['pos'][idx[0]]
 
 out['spikes'] = [data['spikes'][i] for i in idx]
 out['timeSqueezedFR'] = [data['timeSqueezedFR'][i] for i in idx]
