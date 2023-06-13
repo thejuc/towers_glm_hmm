@@ -1,0 +1,15 @@
+
+
+from armt_enter enter pssth acc:
+32
+34
+37
+79
+91
+130
+140
+162
+310
+
+from towers:
+70, 73 modulated by both in opposite directions
